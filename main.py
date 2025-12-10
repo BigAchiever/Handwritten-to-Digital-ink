@@ -12,7 +12,7 @@ st.set_page_config(
 
 
 # Constants
-WEBHOOK_URL = st.secrets.get("WEBHOOK_URL", "https://n8n-wa-5axz.onrender.com/webhook-test/process-notes")
+WEBHOOK_URL = st.secrets.get("WEBHOOK_URL", "https://n8n-wa-5axz.onrender.com/webhook/process-notes")
 DRIVE_FOLDER_LINK = "https://drive.google.com/drive/folders/19F1zlmuVdSs-KyqUkYT6jgUhr96OlLt-?usp=sharing"
 MAX_FILE_SIZE_MB = 20
 

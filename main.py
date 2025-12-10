@@ -3,7 +3,7 @@ import requests
 import time
 
 
-# --- Streamlit Page Config ---
+
 st.set_page_config(
     page_title="Exam Paper Processor",
     page_icon="📝",
@@ -12,12 +12,12 @@ st.set_page_config(
 
 
 # Constants
-WEBHOOK_URL = st.secrets.get("WEBHOOK_URL", "https://n8n-wa-5axz.onrender.com/webhook/process-notes")
+WEBHOOK_URL = st.secrets.get("WEBHOOK_URL", "https://n8n-wa-5axz.onrender.com/webhook-test/process-notes")
 DRIVE_FOLDER_LINK = "https://drive.google.com/drive/folders/19F1zlmuVdSs-KyqUkYT6jgUhr96OlLt-?usp=sharing"
 MAX_FILE_SIZE_MB = 20
 
 
-# --- State Initialization ---
+
 if "processing" not in st.session_state:
     st.session_state.processing = False
 if "upload_success" not in st.session_state:
@@ -28,7 +28,7 @@ if "uploaded_file" not in st.session_state:
     st.session_state.uploaded_file = None
 
 
-# --- Helper: Send File to Webhook ---
+
 def process_document(file_obj):
     try:
         file_bytes = file_obj.read()
@@ -63,18 +63,13 @@ def reset_app():
     st.rerun()
 
 
-# ---------- NEW: button callback ----------
 def start_processing():
     """Callback when 'Upload & Process' is clicked."""
     st.session_state.processing = True
     st.session_state.upload_success = False
     st.session_state.file_processed = False
-    # uploaded_file is already stored by file_uploader callback
-    st.rerun()
-# ----------------------------------------
 
 
-# --- Sidebar: Instructions ---
 with st.sidebar:
     st.header("📌 Instructions")
     st.info(
@@ -94,14 +89,13 @@ with st.sidebar:
     st.caption(f"📎 Max file size: {MAX_FILE_SIZE_MB} MB")
 
 
-# --- Main UI ---
 st.title("📝 Exam Paper Processor")
 st.write("Upload exam papers to generate formatted Word docs in Google Drive.")
 st.divider()
 
 
 # ======================
-# 1️⃣ File Upload
+# 1️ File Upload
 # ======================
 if not st.session_state.upload_success and not st.session_state.processing:
     # store uploaded_file in session_state so callback can use it
@@ -137,7 +131,7 @@ if not st.session_state.upload_success and not st.session_state.processing:
 
 
 # ======================
-# 2️⃣ Processing (Single Execution with Guard)
+# 2 Processing (Single Execution with Guard)
 # ======================
 if (
     st.session_state.processing
@@ -168,7 +162,7 @@ if (
 
 
 # ======================
-# 3️⃣ Success Screen
+# 3 Success Screen
 # ======================
 if st.session_state.upload_success:
     st.success("🎯 File successfully sent for processing!")
@@ -189,7 +183,5 @@ if st.session_state.upload_success:
         if st.button("🔄 Process Another File", type="primary", use_container_width=True):
             reset_app()
 
-
-# Footer
 st.divider()
 st.caption("✨ Powered by **Gemini AI** + **n8n automation**")

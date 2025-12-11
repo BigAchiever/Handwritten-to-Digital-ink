@@ -31,13 +31,24 @@ if "uploaded_file" not in st.session_state:
 
 def process_document(file_obj):
     try:
-        file_bytes = file_obj.read()
-        files = {"file": (file_obj.name, file_bytes, "application/pdf")}
+        file_obj.seek(0)  # Reset file pointer to beginning
+        
+        # n8n expects the binary data with a specific field name
+        files = {
+            "data": (  # Changed from "file" to "data" - match your n8n config
+                file_obj.name, 
+                file_obj.getvalue(),  # Use getvalue() for Streamlit UploadedFile
+                "application/pdf"
+            )
+        }
 
-        # Allow n8n time to receive and acknowledge
-        response = requests.post(WEBHOOK_URL, files=files, timeout=240)
+        response = requests.post(
+            WEBHOOK_URL, 
+            files=files, 
+            timeout=240,
+            allow_redirects=True  # Follow redirects if any
+        )
 
-        # Only care if the server accepted the request (200 OK)
         if response.status_code == 200:
             return {"success": True}
         else:
@@ -47,11 +58,11 @@ def process_document(file_obj):
             }
 
     except requests.exceptions.Timeout:
-        return {"success": False, "error": "The request timed out. The file might be processing in the background."}
-    except requests.exceptions.ConnectionError:
-        return {"success": False, "error": "Connection error. Check your internet/server."}
+        return {"success": False, "error": "Request timed out after 240 seconds"}
+    except requests.exceptions.ConnectionError as e:
+        return {"success": False, "error": f"Connection error: {str(e)}"}
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
 
 def reset_app():

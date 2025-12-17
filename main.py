@@ -94,6 +94,7 @@ with st.sidebar:
         - To access Google drive folder you must be logged into the Symbiosis Google account.
         - Refresh the app if it gets stuck.
         - Call me if you face any issues!
+        - 9424998906 - Ali
         """
     )
     st.divider()
